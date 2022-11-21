@@ -3,5 +3,23 @@
     "console.table": "^0.10.0",
     "inquirer": "^9.1.4",
     "mysql": "^2.18.1"
-  }
+  },
+  "name": "imrans-employee-tracker",
+  "description": "A command-line application to manage a company's employee database, using Node.js, Inquirer, and MySQL.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imran7rassi/Imrans-Employee-Tracker.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/imran7rassi/Imrans-Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/imran7rassi/Imrans-Employee-Tracker#readme"
 }
