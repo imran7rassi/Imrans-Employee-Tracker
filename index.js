@@ -47,4 +47,59 @@ const responseValidation = function (input) {
     return true;
 };
 
+// Welcome image for the users //
 
+console.log(chalk.yellow.bold('======================================================================================================='));
+console.log(``);
+console.log(chalk.red.bold(figlet.textSync('EMPLOYEE TRACKER')));
+console.log(``);
+console.log(`                               ` + chalk.green.bold('Made with ❤️️ by Imran Rasi'));
+console.log(``);
+console.log(chalk.yellow.bold(`======================================================================================================`));
+
+
+// this is the function 
+// to start our application
+
+function start() {
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "What would you like to do?",
+            name: "begin",
+            choices: ["View All Employees", "View All Departments", "View All Roles", "Add Department", "Add Role", "Add Employee", "Update Employee Roles", "Exit"]
+        }
+    
+    // When you select one of the above options
+    // then the answer will appear
+     
+    ]).then(answer => {
+
+        switch (answer.begin) {
+            case "View All Employees":
+                viewAllEmployees();
+                break;
+            case "View All Departments":
+                viewAllDepartments();
+                break;
+            case "View All Roles":
+                viewAllRoles();
+                break;
+            case "Add Department":
+                addDepartment();
+                break;
+            case "Add Role":
+                addRole();
+                break;
+            case "Add Employee":
+                newEmployeeName();
+                break;
+            case "Update Employee Roles":
+                updateEmployeeRole();
+                break;
+            case "Exit":
+                connection.end();
+                break;
+        }
+    });
+};
