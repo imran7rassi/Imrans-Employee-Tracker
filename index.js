@@ -64,42 +64,63 @@ console.log(chalk.yellow.bold(`=================================================
 function start() {
     inquirer.prompt([
         {
-            type: "list",
-            message: "What would you like to do?",
-            name: "begin",
-            choices: ["View All Employees", "View All Departments", "View All Roles", "Add Department", "Add Role", "Add Employee", "Update Employee Roles", "Exit"]
+          type: "list",
+          name: "begin",
+          message: "What would you like to do?",
+          choices: ["View all employees", "View all roles", "View all departments", "add an employee", "add a role", "add a department", "update role for an employee", "update employee's manager", "view employees by manager", "delete a department", "delete a role", "delete an employee", "View the total utilized budget of a department", "quit"]
         }
-    
+        
     // When you select one of the above options
     // then the answer will appear
-     
     ]).then(answer => {
 
-        switch (answer.begin) {
-            case "View All Employees":
-                viewAllEmployees();
-                break;
-            case "View All Departments":
-                viewAllDepartments();
-                break;
-            case "View All Roles":
-                viewAllRoles();
-                break;
-            case "Add Department":
-                addDepartment();
-                break;
-            case "Add Role":
-                addRole();
-                break;
-            case "Add Employee":
-                newEmployeeName();
-                break;
-            case "Update Employee Roles":
-                updateEmployeeRole();
-                break;
-            case "Exit":
-                connection.end();
-                break;
-        }
-    });
-};
+          switch (answer.begin) {
+            case "View all employees":
+              viewAll("EMPLOYEE");
+              break;
+            case "View all roles":
+              viewAll("ROLE");
+              break;
+            case "View all departments":
+              viewAll("DEPARTMENT");
+              break;
+            case "add a department":
+              addNewDepartment();
+              break;
+            case "add a role":
+              addNewRole();
+              break;
+            case "add an employee":
+              addNewEmployee();
+              break;
+            case "update role for an employee":
+              updateRole();
+              break;
+            case "view employees by manager":
+              viewEmployeeByManager();
+              break;
+            case "update employee's manager":
+              updateManager();
+              break;
+            case "delete a department":
+              deleteDepartment();
+              break;
+            case "delete a role":
+              deleteRole();
+              break;
+            case "delete an employee":
+              deleteEmployee();
+              break;
+            case "View the total utilized budget of a department":
+              viewBudget();
+              break;
+            default:
+              connection.end();
+          }
+        })
+
+        .catch(err => {
+          console.error(err);
+        });
+      };
+
