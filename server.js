@@ -49,13 +49,13 @@ const responseValidation = function (input) {
 
 // Welcome image for the users //
 
-console.log(chalk.yellow.bold('======================================================================================================='));
+console.log(chalk.green.bold('======================================================================================================='));
 console.log(``);
-console.log(chalk.red.bold(figlet.textSync('EMPLOYEE TRACKER')));
+console.log(chalk.white.bold(figlet.textSync('EMPLOYEE TRACKER')));
 console.log(``);
-console.log(`                               ` + chalk.green.bold('Made with ❤️️ by Imran Rasi'));
+console.log(`                               ` + chalk.blue.bold('Made with ❤️️ by Imran Rasi'));
 console.log(``);
-console.log(chalk.yellow.bold(`======================================================================================================`));
+console.log(chalk.green.bold(`======================================================================================================`));
 
 
 // this is the function 
@@ -123,4 +123,62 @@ function start() {
           console.error(err);
         });
       };
+
+
+// this is the function to show all the 
+// employees with their first name
+// last name, salary .....
+
+function viewAllEmployees() {
+
+    var query = "SELECT CONCAT(a.first_name, ' ', a.last_name) AS 'employee name', title, salary, name AS department, ";
+
+    query += "CONCAT(b.first_name, ' ', b.last_name) AS manager FROM employee a LEFT JOIN employee b ON a.manager_id = b.id ";
+    query += "INNER JOIN role ON a.role_id = role.id INNER JOIN department ON department_id = department.id"
+    connection.query(query, (err, res) => {
+
+        if (err) throw err;
+        console.log("\n-----------------------------------");
+        const table = cTable.getTable(res);
+        console.log(table);
+        start();
+    });
+};
+
+
+// this is the function that 
+// shows all the department that
+// stored in the database
+
+function viewAllDepartments() {
+    var query = "SELECT * FROM department ORDER BY id";
+    connection.query(query, (err, res) => {
+
+        if (err) throw err;
+        console.log("\n-----------------------------------");
+        const table = cTable.getTable(res);
+        console.log(table);
+
+        start();
+    });
+};
+
+
+// this is the function that 
+// shows all the Roles that 
+// stored in the database
+
+function viewAllRoles() {
+    var query = "SELECT title, salary, name AS department FROM role INNER JOIN department ON role.department_id = department.id";
+
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+
+        console.log("\n-----------------------------------");
+        const table = cTable.getTable(res);
+        console.log(table);
+
+        start();
+    });
+};
 
