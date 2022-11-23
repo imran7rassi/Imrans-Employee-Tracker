@@ -4,7 +4,7 @@
 // from current places //
 
 const inquirer = require("inquirer");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const cTable = require("console.table");
 // terminal string styling
 const chalk = require('chalk');
@@ -27,28 +27,17 @@ var connection = mysql.createConnection({
 // This is the initiating 
 // for mysql connection
 
-connection.connect((err) => {
-    if(err) {
-        console.error("error connecting: " + err.stack);
-        return;
-    }
-    console.log("connected as id " + connection.threadId);
+connection.connect(err => {
+  if (err) throw err;
+  console.log('connected as id ' + connection.threadId);
+  afterConnection();
 });
 
 // this function is use to validate
 // the first and last name in CLI
 
-const responseValidation = function (input) {
-    if (input === "") {
-        console.log("This parameter cannot be empty!");
-        return false;
-    }
-
-    return true;
-};
-
 // Welcome image for the users //
-
+afterConnection = () => {
 console.log(chalk.green.bold('======================================================================================================='));
 console.log(``);
 console.log(chalk.white.bold(figlet.textSync('EMPLOYEE TRACKER')));
@@ -56,12 +45,13 @@ console.log(``);
 console.log(`                               ` + chalk.blue.bold('Made with ❤️️ by Imran Rasi'));
 console.log(``);
 console.log(chalk.green.bold(`======================================================================================================`));
-
+ promptuser();
+};
 
 // this is the function 
 // to start our application
 
-function start() {
+function promptuser() {
     inquirer.prompt([
         {
           type: "list",
@@ -76,10 +66,10 @@ function start() {
             'Add New Employee',
             'Add New Role',
             'Add New Department',
-            chalk.green('Update Employee Managers'),
-            chalk.green('Delete Employee'),
-            chalk.green('Delete Role'),
-            chalk.green('Delete Department'),
+            chalk.green('Delete an employee'),
+            chalk.green('Delete a role'),
+            chalk.green('Delete a department'),
+            chalk.green('View department budgets'),
             'Exit Menu',
         ],
 
@@ -93,29 +83,36 @@ function start() {
       if (choices === 'View All Employees') {
         showEmployees();
     }
+
     if (choices === 'View All Roles') {
         showRoles();
     }
+
     if (choices === 'View All Departments') {
         showDepartments();
     }
-    if (choices === "Add a department") {
+
+    if (choices === 'View Employees By Manager') {
+      showEmployeesByManager();
+    }
+
+    if (choices === "Add New department") {
       addDepartment();
     }
 
-    if (choices === "Add a role") {
+    if (choices === "Add New Role") {
       addRole();
     }
 
-    if (choices === "Add an employee") {
+    if (choices === "Add New Employee") {
       addEmployee();
     }
 
-    if (choices === "Update an employee role") {
+    if (choices === "Update Employee Role") {
       updateEmployee();
     }
 
-    if (choices === "Update an employee manager") {
+    if (choices === "Update Employee Managers") {
       updateManager();
     }
 
@@ -147,6 +144,39 @@ function start() {
       };
 
 
+// this is the function that 
+// shows all the department that
+// stored in the database
+
+showDepartments = () => {
+  console.log('Showing all departments...\n');
+  const sql = `SELECT department.id AS id, department.name AS department FROM department`; 
+
+  connection.promise().query(sql, (err, rows) => {
+    if (err) throw err;
+    console.table(rows);
+    promptuser();
+  });
+};
+
+// this is the function that 
+// shows all the Roles that 
+// stored in the database
+
+showRoles = () => {
+  console.log('Showing all roles...\n');
+
+  const sql = `SELECT role.id, role.title, department.name AS department
+               FROM role
+               INNER JOIN department ON role.department_id = department.id`;
+  
+  connection.promise().query(sql, (err, rows) => {
+    if (err) throw err; 
+    console.table(rows); 
+    promptuser();
+  })
+};
+
 // this is the function to show all the 
 // employees with their first name
 // last name, salary .....
@@ -168,43 +198,21 @@ showEmployees = () => {
   connection.promise().query(sql, (err, rows) => {
     if (err) throw err; 
     console.table(rows);
-    promptUser();
+    promptuser();
   });
 };
 
-// this is the function that 
-// shows all the department that
-// stored in the database
 
-showDepartments = () => {
-  console.log('Showing all departments...\n');
-  const sql = `SELECT department.id AS id, department.name AS department FROM department`; 
-
-  connection.promise().query(sql, (err, rows) => {
-    if (err) throw err;
-    console.table(rows);
-    promptUser();
-  });
-};
-
-// this is the function that 
-// shows all the Roles that 
-// stored in the database
-
-showRoles = () => {
-  console.log('Showing all roles...\n');
-
-  const sql = `SELECT role.id, role.title, department.name AS department
-               FROM role
-               INNER JOIN department ON role.department_id = department.id`;
-  
-  connection.promise().query(sql, (err, rows) => {
-    if (err) throw err; 
-    console.table(rows); 
-    promptUser();
+// BONUS: SQL ORDER BY statement to view employees by manager
+const showEmployeesByManager = () => {
+  const query = 'SELECT * FROM employee ORDER BY manager_id DESC';
+  connection.query(query, (err, res) => {
+      if (err) throw err;
+      console.table(res);
   })
-};
 
+  start();
+}
 
 // we use this function 
 // when we want to add a department
@@ -239,3 +247,73 @@ addDepartment = () => {
   });
 };
 
+// this is the function to
+// add the role for employee
+// if there is no role inputed
+// sp throw an err
+
+addRole = () => {
+  inquirer.prompt([
+    {
+      type: 'input', 
+      name: 'role',
+      message: "What role do you want to add?",
+      validate: addRole => {
+        if (addRole) {
+            return true;
+        } else {
+            console.log('Please enter a role');
+            return false;
+        }
+      }
+    },
+    {
+      type: 'input', 
+      name: 'salary',
+      message: "What is the salary of this role?",
+      validate: addSalary => {
+        if (isNAN(addSalary)) {
+            return true;
+        } else {
+            console.log('Please enter a salary');
+            return false;
+        }
+      }
+    }
+  ])
+    .then(answer => {
+      const params = [answer.role, answer.salary];
+
+      // grab dept from department table
+      const roleSql = `SELECT name, id FROM department`; 
+
+      connection.promise().query(roleSql, (err, data) => {
+        if (err) throw err; 
+    
+        const dept = data.map(({ name, id }) => ({ name: name, value: id }));
+
+        inquirer.prompt([
+        {
+          type: 'list', 
+          name: 'dept',
+          message: "What department is this role in?",
+          choices: dept
+        }
+        ])
+          .then(deptChoice => {
+            const dept = deptChoice.dept;
+            params.push(dept);
+
+            const sql = `INSERT INTO role (title, salary, department_id)
+                        VALUES (?, ?, ?)`;
+
+            connection.query(sql, params, (err, result) => {
+              if (err) throw err;
+              console.log('Added' + answer.role + " to roles!"); 
+
+              showRoles();
+       });
+     });
+   });
+ });
+};
