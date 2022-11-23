@@ -11,7 +11,7 @@ VALUES
 -- Creating the rows 
 -- in the role tablt --
 
-INSERT INTO role (title, salary, department_id)
+INSERT INTO roles (title, salary, department_id)
 VALUES
 
 ("Sales Manager", "150000.00", 1),
@@ -43,5 +43,5 @@ VALUES
 -- each table in database --
 
 SELECT * FROM employee;
-SELECT * FROM role;
+SELECT * FROM roles;
 SELECT * FROM department;

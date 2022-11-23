@@ -1,14 +1,14 @@
 
 -- Droping the employee tracker database if
 -- it's already exist
-DROP DATABASE IF EXISTS employee_Tracker;
+DROP DATABASE IF EXISTS employeeTracker;
 
 -- we create a database by name of
 -- employee tracker 
-CREATE DATABASE employee_Tracker;
+CREATE DATABASE employeeTracker;
 
 -- use the database --
-USE employee_Tracker;
+USE employeeTracker;
 
 -- Create the table for department --
 
@@ -20,7 +20,7 @@ CREATE TABLE department(
 
 -- create the table for roles --
 
-CREATE TABLE roles(
+CREATE TABLE roles (
     id INTEGER AUTO_INCREMENT NOT NULL,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL NOT NULL,

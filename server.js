@@ -21,7 +21,7 @@ var connection = mysql.createConnection({
     port: 3306,
     user: "root",
     password: "hi786123",
-    database: "employee_Tracker"
+    database: "employeeTracker"
 });
 
 // This is the initiating 
@@ -65,63 +65,85 @@ function start() {
     inquirer.prompt([
         {
           type: "list",
-          name: "begin",
+          name: "choices",
           message: "What would you like to do?",
-          choices: ["View all employees", "View all roles", "View all departments", "add an employee", "add a role", "add a department", "update role for an employee", "update employee's manager", "view employees by manager", "delete a department", "delete a role", "delete an employee", "View the total utilized budget of a department", "quit"]
+          choices: [
+            'View All Employees',
+            'View All Roles',
+            'View All Departments',
+            'View Employees By Manager',
+            'Update Employee Role',
+            'Add New Employee',
+            'Add New Role',
+            'Add New Department',
+            chalk.green('Update Employee Managers'),
+            chalk.green('Delete Employee'),
+            chalk.green('Delete Role'),
+            chalk.green('Delete Department'),
+            'Exit Menu',
+        ],
+
         }
         
     // When you select one of the above options
     // then the answer will appear
-    ]).then(answer => {
+      ]).then((answers) => {
+      const { choices } = answers; 
 
-          switch (answer.begin) {
-            case "View all employees":
-              viewAll("EMPLOYEE");
-              break;
-            case "View all roles":
-              viewAll("ROLE");
-              break;
-            case "View all departments":
-              viewAll("DEPARTMENT");
-              break;
-            case "add a department":
-              addNewDepartment();
-              break;
-            case "add a role":
-              addNewRole();
-              break;
-            case "add an employee":
-              addNewEmployee();
-              break;
-            case "update role for an employee":
-              updateRole();
-              break;
-            case "view employees by manager":
-              viewEmployeeByManager();
-              break;
-            case "update employee's manager":
-              updateManager();
-              break;
-            case "delete a department":
-              deleteDepartment();
-              break;
-            case "delete a role":
-              deleteRole();
-              break;
-            case "delete an employee":
-              deleteEmployee();
-              break;
-            case "View the total utilized budget of a department":
-              viewBudget();
-              break;
-            default:
-              connection.end();
-          }
-        })
+      if (choices === 'View All Employees') {
+        showEmployees();
+    }
+    if (choices === 'View All Roles') {
+        showRoles();
+    }
+    if (choices === 'View All Departments') {
+        showDepartments();
+    }
+    if (choices === "Add a department") {
+      addDepartment();
+    }
 
-        .catch(err => {
-          console.error(err);
-        });
+    if (choices === "Add a role") {
+      addRole();
+    }
+
+    if (choices === "Add an employee") {
+      addEmployee();
+    }
+
+    if (choices === "Update an employee role") {
+      updateEmployee();
+    }
+
+    if (choices === "Update an employee manager") {
+      updateManager();
+    }
+
+    if (choices === "View employees by department") {
+      employeeDepartment();
+    }
+
+    if (choices === "Delete a department") {
+      deleteDepartment();
+    }
+
+    if (choices === "Delete a role") {
+      deleteRole();
+    }
+
+    if (choices === "Delete an employee") {
+      deleteEmployee();
+    }
+
+    if (choices === "View department budgets") {
+      viewBudget();
+    }
+
+    if (choices === 'Exit Menu') {
+        connection.end();
+    }
+
+});
       };
 
 
@@ -129,56 +151,91 @@ function start() {
 // employees with their first name
 // last name, salary .....
 
-function viewAllEmployees() {
+showEmployees = () => {
+  console.log('Showing all employees...\n'); 
+  const sql = `SELECT employee.id, 
+                      employee.first_name, 
+                      employee.last_name, 
+                      role.title, 
+                      department.name AS department,
+                      role.salary, 
+                      CONCAT (manager.first_name, " ", manager.last_name) AS manager
+               FROM employee
+                      LEFT JOIN role ON employee.role_id = role.id
+                      LEFT JOIN department ON role.department_id = department.id
+                      LEFT JOIN employee manager ON employee.manager_id = manager.id`;
 
-    var query = "SELECT CONCAT(a.first_name, ' ', a.last_name) AS 'employee name', title, salary, name AS department, ";
-
-    query += "CONCAT(b.first_name, ' ', b.last_name) AS manager FROM employee a LEFT JOIN employee b ON a.manager_id = b.id ";
-    query += "INNER JOIN role ON a.role_id = role.id INNER JOIN department ON department_id = department.id"
-    connection.query(query, (err, res) => {
-
-        if (err) throw err;
-        console.log("\n-----------------------------------");
-        const table = cTable.getTable(res);
-        console.log(table);
-        start();
-    });
+  connection.promise().query(sql, (err, rows) => {
+    if (err) throw err; 
+    console.table(rows);
+    promptUser();
+  });
 };
-
 
 // this is the function that 
 // shows all the department that
 // stored in the database
 
-function viewAllDepartments() {
-    var query = "SELECT * FROM department ORDER BY id";
-    connection.query(query, (err, res) => {
+showDepartments = () => {
+  console.log('Showing all departments...\n');
+  const sql = `SELECT department.id AS id, department.name AS department FROM department`; 
 
-        if (err) throw err;
-        console.log("\n-----------------------------------");
-        const table = cTable.getTable(res);
-        console.log(table);
-
-        start();
-    });
+  connection.promise().query(sql, (err, rows) => {
+    if (err) throw err;
+    console.table(rows);
+    promptUser();
+  });
 };
-
 
 // this is the function that 
 // shows all the Roles that 
 // stored in the database
 
-function viewAllRoles() {
-    var query = "SELECT title, salary, name AS department FROM role INNER JOIN department ON role.department_id = department.id";
+showRoles = () => {
+  console.log('Showing all roles...\n');
 
-    connection.query(query, (err, res) => {
+  const sql = `SELECT role.id, role.title, department.name AS department
+               FROM role
+               INNER JOIN department ON role.department_id = department.id`;
+  
+  connection.promise().query(sql, (err, rows) => {
+    if (err) throw err; 
+    console.table(rows); 
+    promptUser();
+  })
+};
+
+
+// we use this function 
+// when we want to add a department
+// we enter a department and if it's
+// empty so throw an err
+
+addDepartment = () => {
+  inquirer.prompt([
+    {
+      type: 'input', 
+      name: 'addDept',
+      message: "What department do you want to add?",
+      validate: addDept => {
+        if (addDept) {
+            return true;
+        } else {
+            console.log('Please enter a department');
+            return false;
+        }
+      }
+    }
+  ])
+    .then(answer => {
+      const sql = `INSERT INTO department (name)
+                  VALUES (?)`;
+      connection.query(sql, answer.addDept, (err, result) => {
         if (err) throw err;
+        console.log('Added ' + answer.addDept + " to departments!"); 
 
-        console.log("\n-----------------------------------");
-        const table = cTable.getTable(res);
-        console.log(table);
-
-        start();
+        showDepartments();
     });
+  });
 };
 

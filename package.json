@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "chalk": "^5.1.2",
+    "chalk": "^4.1.2",
     "console.table": "^0.10.0",
     "figlet": "^1.5.2",
-    "inquirer": "^9.1.4",
+    "inquirer": "^8.2.5",
     "mysql": "^2.18.1"
   },
   "name": "imrans-employee-tracker",
@@ -22,6 +22,5 @@
   "bugs": {
     "url": "https://github.com/imran7rassi/Imrans-Employee-Tracker/issues"
   },
-  "homepage": "https://github.com/imran7rassi/Imrans-Employee-Tracker#readme",
-  "devDependencies": {}
+  "homepage": "https://github.com/imran7rassi/Imrans-Employee-Tracker#readme"
 }
