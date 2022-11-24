@@ -22,17 +22,16 @@ CREATE TABLE role (
   title VARCHAR(30) UNIQUE NOT NULL,
   salary DECIMAL UNSIGNED NOT NULL,
   departmentId INT UNSIGNED NOT NULL,
-  FOREIGN KEY (departmentId) REFERENCES departments(id)
+  FOREIGN KEY (departmentId) REFERENCES department(id)
 );
 
 -- Create the table for employee --
-
 CREATE TABLE employee (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
   firstName VARCHAR(30) NOT NULL,
   lastName VARCHAR(30) NOT NULL,
   roleId INT UNSIGNED NOT NULL,
   managerId INT UNSIGNED,
-  FOREIGN KEY(roleId) REFERENCES roles(id),
-  FOREIGN KEY(managerId) REFERENCES employees(id)
+  FOREIGN KEY(roleId) REFERENCES role(id),
+  FOREIGN KEY(managerId) REFERENCES employee(id)
 );

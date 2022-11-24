@@ -12,7 +12,7 @@ SELECT * FROM DEPARTMENT;
 -- Creating the rows 
 -- in the role tablt --
 
-INSERT INTO role (title, salary, department_id)
+INSERT INTO role (title, salary, departmentId)
 VALUES ("software engineer", 120000, 1),
     ("project manager", 90000, 1),
     ("engineering manager", 225000, 1),
@@ -26,7 +26,7 @@ SELECT * FROM ROLE;
 
 -- Creating the rows
 -- in the employee table --
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
+INSERT INTO employee (firstName, lastName, roleId, managerId)
 VALUES ("Alex", "Aria", 3, NULL),
     ("Tom", "Brus", 3, 1),
     ("Ali", "Max", 1, 2),

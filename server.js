@@ -168,7 +168,7 @@ function addDepartment() {
 // so throw an err
 
 const addRole = () => {
-  db.query('SELECT * FROM DEPARTMENT', (err, departments) => {
+  db.query('SELECT * FROM DEPARTMENT', (err, department) => {
     if (err) { console.log(err) }
     inquirer.prompt([
       {
@@ -185,13 +185,13 @@ const addRole = () => {
         type: 'list',
         name: 'departmentId',
         message: 'Department ID:',
-        choices: departments.map(department => ({
+        choices: department.map(department => ({
           name: `${department.name}`,
           value: department.id
         }))
       }
     ]).then(function (answers) {
-      db.query('INSERT INTO role SET ?', {
+      db.query('INSERT INTO roles SET ?', {
         title: answers.title,
         salary: answers.salary,
         departmentId: answers.departmentId
@@ -311,14 +311,14 @@ function removeRole() {
 // from the department 
 
 function removeEmployee() {
-  db.query('SELECT * FROM employee', (err, employee) => {
+  db.query('SELECT * FROM employee', (err, employees) => {
     if (err) { console.log(err) }
     inquirer.prompt([
       {
         type: "list",
         name: "removeEmp",
         message: "Select the employee which will be removed",
-        choices: employee.map(employee => ({
+        choices: employees.map(employee => ({
           name: `${employee.firstName} ${employee.lastName}`,
           value: employee.id
         }))
@@ -341,7 +341,7 @@ function removeEmployee() {
 
 function updateEmpRole() {
 
-  db.query('SELECT * FROM employee', (err, employee) => {
+  db.query('SELECT * FROM employee', (err, employees) => {
     if (err) { console.log(err) }
     db.query(`SELECT * FROM roles`, (err, roles) => {
       if (err) { console.log(err) }
@@ -350,7 +350,7 @@ function updateEmpRole() {
           type: "list",
           name: "selectEmp",
           message: "Select the employee who's role will be updated",
-          choices: employee.map(employee => ({
+          choices: employees.map(employee => ({
             name: `${employee.firstName} ${employee.lastName} - Role ID:${employee.roleId}`,
             value: employee.id
           }))
