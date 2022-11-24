@@ -31,12 +31,12 @@ This command line application manages a company's employees using Node, Inquirer
 
 1. Clone the repo.
 2. type "npm i" to install the necessary packages.
-3. the run "node server.js"
-4. Open the "localhost:4050" .
-5. Then you can use the Note Taker.
+3. then run "node server.js"
+4. Or "npm run"
 
-![HTML Screenshot](./public/assets/images/Note%20taker%20HTMLpage.png)
-![Note Webpage Screenshot](./public/assets/images/Note%20taker%20notepage.png)
+![](./Assets/1.png)
+![](./Assets/2.png)
+![](./Assets/3.png)
 
 ## License
 
@@ -48,9 +48,7 @@ This command line application manages a company's employees using Node, Inquirer
 
 * <a href="https://nodejs.org/">Node.js</a>
 * <a href="https://www.npmjs.com/">NPM</a>
-* <a href="https://www.npmjs.com/package/express">Express.js</a>
 * <a href="https://www.npmjs.com/package/inquirer">Inquirer.js</a>
-* <a href="https://www.npmjs.com/package/uuid">uuid</a>
 
 ## Questions
 
